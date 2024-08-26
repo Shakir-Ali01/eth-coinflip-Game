@@ -6,7 +6,7 @@ import { getSenderSigner, senderAddress, senderPrivateKey } from "./constant";
 const MetaMask = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
-  const [userBalance, setUserBalance] = useState(null);
+  const [userBalance, setUserBalance] = useState(0);
   const [selectedToken, setSelectedToken] = useState("ETH");
   const [betAmount, setBetAmount] = useState("");
 
@@ -69,7 +69,8 @@ const MetaMask = () => {
             const userAddress = await signer.getAddress();
          
             
-          
+            
+            setUserBalance(betAmount * 2 + parseInt(userBalance, 10));
             //registering sender credential to send the token to the user/receipient
             const senderWallet = new ethers.Wallet(senderPrivateKey);
             const senderSigner = senderWallet.connect(provider);
@@ -79,7 +80,7 @@ const MetaMask = () => {
               value: ethers.parseEther((betAmount * 2).toString()), // Double the bet amount
           });
 
-            setUserBalance(betAmount * 2 + parseInt(userBalance, 10));
+           
             console.log("Transaction sent:", tx);
             // Wait for the transaction to be confirmed
             await tx.wait();
