@@ -1,3 +1,17 @@
+#Important Note
+Step 1:- Go to constant.js And define your
+         (i) Sender Private Key :- From Which you are want to send the token to the winner user
+          
+
+Working :- 
+Step 1:- using ConnectWallet user will connect their metamask wallet after connect their wallet user balance and address will show frontEnd
+
+Step 2:- For Coin Flip user will select coin side Head/Tails and will select bat amount if user will won then we will return double to batAmount to the user 
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
