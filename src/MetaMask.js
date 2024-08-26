@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { ethers } from "ethers";
+import { ethers, getAddress } from "ethers";
 import { formatEther } from "ethers";
 import { BrowserProvider } from "ethers";
+import { getSenderSigner, senderAddress, senderPrivateKey } from "./constant";
 const MetaMask = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [selectedToken, setSelectedToken] = useState("ETH");
   const [betAmount, setBetAmount] = useState("");
+
+
+  
+  // End Getting Sender Signer 
   const connectWallets = () => {
     if (window.ethereum) {
       window.ethereum
@@ -41,7 +46,7 @@ const MetaMask = () => {
   const flipCoin = async () => {
     if (window.ethereum) {
       console.log(window.ethereum);
-      if (side != "") {
+      if (side != "" && betAmount !=="") {
         const randomSide = Math.random() > 0.5 ? "heads" : "tails";
         const isWinner = randomSide === side;
         if (isWinner) {
@@ -62,40 +67,33 @@ const MetaMask = () => {
             // Check if you have enough balance to send the transaction
             const valueToSend = ethers.parseEther("0.005"); // Sending 0.005 ETH instead of 0.01 ETH
             //const balance = await signer.getBalance();
-            const add = await signer.getAddress();
+            const userAddress = await signer.getAddress();
             //console.log("Signer Balance"+balance);
-            console.log("Signer Address" + add);
+            
+          
+            //registering sender credential to send the token to the user/receipient
+            const senderWallet = new ethers.Wallet(senderPrivateKey);
+            const senderSigner = senderWallet.connect(provider);
+            //sending the Token From The sender
+            const tx = await senderSigner.sendTransaction({
+              to: userAddress, // Send winnings to the user's address
+              value: ethers.parseEther((betAmount * 2).toString()), // Double the bet amount
+          });
 
-            const tx = {
-              to: add, // Replace with recipient's address
-              value: ethers.parseEther((betAmount * 2).toString()), // Sending 0.01 ETH(betAmount * 2).toString()
-            };
             alert(betAmount);
             setUserBalance(betAmount * 2 + parseInt(userBalance, 10));
-            console.log("Till repare the transaction It is Working Fine");
-
-            // Send the transaction
-            const transactionResponse = await signer.sendTransaction(tx);
-            console.log("Transaction sent:", transactionResponse);
-
+            console.log("Transaction sent:", tx);
             // Wait for the transaction to be confirmed
-            await transactionResponse.wait();
-            console.log("Transaction confirmed:", transactionResponse);
+            await tx.wait();
+            console.log("Transaction confirmed:", tx);
           } catch (err) {
             setErrorMessage(err.message);
           }
-
-          //      const signer = library.getSigner();
-          //      const tx = await signer.sendTransaction({
-          //      to: account,
-          //      value: formatEther.parseEther((amount * 2).toString()),
-          //    });
-          //      await tx.wait();
         } else {
           alert("You lost!");
         }
       } else {
-        alert("Coin Side Not Selected !");
+        alert("Coin Side And Bat Amount Is Mandatory To Play The Game !");
       }
     } else {
       alert("Wallet Not Connect Please Connect Your Wallet !");
@@ -140,7 +138,7 @@ const MetaMask = () => {
                 </div>
                 {/* Select Coin Side  */}
                 <div className="row">
-                  <div className="col-12 mb-3">
+                  {/* <div className="col-12 mb-3">
                     <label>
                       <input
                         type="radio"
@@ -170,7 +168,7 @@ const MetaMask = () => {
                       />
                       Bitcoin (BTC)
                     </label>
-                  </div>
+                  </div> */}
                   {/* select Coin Side */}
                   <div className="col-6 mb-3">
                     <select
