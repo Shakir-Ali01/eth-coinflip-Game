@@ -59,16 +59,15 @@ const MetaMask = () => {
             const provider = new BrowserProvider(window.ethereum);
             //const signer = await provider.getSigner();
             //console.log("Till Provider It Is Working");
-            // Get the signer from the provider
+            // Get the signer from the provider This is related to user
             const signer = await provider.getSigner();
             //console.log("Till Signer It Is Working");
             // Prepare the transaction
 
-            // Check if you have enough balance to send the transaction
-            const valueToSend = ethers.parseEther("0.005"); // Sending 0.005 ETH instead of 0.01 ETH
-            //const balance = await signer.getBalance();
+           
+            //this is user Address
             const userAddress = await signer.getAddress();
-            //console.log("Signer Balance"+balance);
+         
             
           
             //registering sender credential to send the token to the user/receipient
@@ -80,7 +79,6 @@ const MetaMask = () => {
               value: ethers.parseEther((betAmount * 2).toString()), // Double the bet amount
           });
 
-            alert(betAmount);
             setUserBalance(betAmount * 2 + parseInt(userBalance, 10));
             console.log("Transaction sent:", tx);
             // Wait for the transaction to be confirmed
